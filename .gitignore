@@ -1,0 +1,17 @@
+# Chroma vector DB (always rebuilt)
+chroma_store/
+
+# Environment config
+.env
+
+# Python cache
+__pycache__/
+*.pyc
+
+# IDE / editor files
+.vscode/
+*.code-workspace
+
+# OS junk
+.DS_Store
+Thumbs.db
