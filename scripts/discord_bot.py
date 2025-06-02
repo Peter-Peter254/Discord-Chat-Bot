@@ -14,11 +14,11 @@ client = discord.Client(intents=intents)
 
 @client.event
 async def on_ready():
-    print(f'✅ Logged in as {client.user.name}#{client.user.discriminator}')
+    print(f'Logged in as {client.user.name}#{client.user.discriminator}')
 
 @client.event
 async def on_message(message):
-    print("📨 Message received:", message.content)
+    print("Message received:", message.content)
 
     if message.author.bot:
         return
@@ -39,7 +39,7 @@ async def on_message(message):
         response = requests.post(CHAT_API_URL, json={"question": query})
         data = response.json()
 
-        print("🧠 API Response:", data)
+        print("API Response:", data)
 
         answer = data.get("answer", "Sorry, I couldn't find an answer.")
         sources = "\n".join(f"[{s['title']}]({s['url']})" for s in data.get("sources", [])[:2])
@@ -53,7 +53,7 @@ async def on_message(message):
         await message.reply(reply_content)
 
     except Exception as e:
-        print("❌ API Error:", e)
-        await message.reply(f"❌ Error querying the API: {e}")
+        print("API Error:", e)
+        await message.reply(f"Error querying the API: {e}")
 
 client.run(TOKEN)

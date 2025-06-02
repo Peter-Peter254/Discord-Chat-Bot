@@ -17,18 +17,17 @@ if os.path.exists(store_path):
 openai_api_key = os.getenv("OPENAI_API_KEY")
 client = OpenAI(api_key=openai_api_key)
 
-
+print("Loading railway_docs_full.json...")
 with open("railway_docs_full.json", "r", encoding="utf-8") as f:
     documents = json.load(f)
 
-# Tokenizer for chunking
+
 tokenizer = get_encoding("cl100k_base")
 
-# Init Chroma persistent vector store
+# Init Chroma store
 chroma_client = chromadb.PersistentClient(path=store_path)
 collection = chroma_client.get_or_create_collection(name="railway_docs")
 
-# Chunking function
 def chunk_text(text, max_tokens=500, overlap=50):
     tokens = tokenizer.encode(text)
     chunks = []
@@ -40,10 +39,12 @@ def chunk_text(text, max_tokens=500, overlap=50):
         start += max_tokens - overlap
     return chunks
 
-# Embed each chunk
+print("Embedding and storing chunks...")
+chunk_count = 0
 for doc in documents:
     url = doc["url"]
     chunks = chunk_text(doc["content"])
+    print(f"{url} - {len(chunks)} chunks")
 
     for i, chunk in enumerate(chunks):
         chunk_id = str(uuid4())
@@ -63,7 +64,8 @@ for doc in documents:
                     "title": doc.get("title", "Untitled")
                 }]
             )
+            chunk_count += 1
         except Exception as e:
             print(f"Failed to embed chunk {i} from {url}: {e}")
 
-print("Vector store created and saved to ./chroma_store")
+print(f" Vector store created with {chunk_count} chunks.")
