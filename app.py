@@ -16,9 +16,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-
 
 store_path = "./chroma_store"
 chroma_client = chromadb.PersistentClient(path=store_path)
